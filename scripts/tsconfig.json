@@ -1,38 +1,17 @@
 {
   "compilerOptions": {
-    /* Visit https://aka.ms/tsconfig.json to read more about this file */
-
     /* Basic Options */
-    // "incremental": true,
-    "target": "ES2021",
+    "target": "es2023",
     "module": "NodeNext",
     "lib": ["ES2021", "ES2022", "ESNext"],
-    // "allowJs": true,
-    // "checkJs": true,
-    // "jsx": "react",
-    // "jsxImportSource": "react",
+
     "declaration": true,
     "declarationMap": true,
-    // "outFile": "./",
-    // "outDir": "./dist",
-    // "rootDir": "./",
-    // "composite": true,
-    // "tsBuildInfoFile": "./",
-    // "removeComments": true,
     "noEmit": true,
-    // "importHelpers": true,
-    // "downlevelIteration": true,
-    // "isolatedModules": true,
+    "isolatedModules": true,
 
     /* Strict Type-Checking Options */
     "strict": true,
-    // "noImplicitAny": true,
-    // "strictNullChecks": true,
-    // "strictFunctionTypes": true,
-    // "strictBindCallApply": true,
-    // "strictPropertyInitialization": true,
-    // "noImplicitThis": true,
-    // "alwaysStrict": true,
 
     /* Additional Checks */
     // "noUnusedLocals": true,
@@ -44,26 +23,10 @@
 
     /* Module Resolution Options */
     "moduleResolution": "NodeNext",
-    // "baseUrl": "./",
-    // "paths": {},
-    // "rootDirs": [],
-    // "typeRoots": [],
-    // "types": [],
-    // "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-    // "preserveSymlinks": true,
-    // "allowUmdGlobalAccess": true,
+    "allowSyntheticDefaultImports": false,
 
     /* Source Map Options */
     "sourceMap": true,
-    // "sourceRoot": "",
-    // "mapRoot": "",
-    // "inlineSourceMap": true,
-    // "inlineSources": true,
-
-    /* Experimental Options */
-    // "experimentalDecorators": true,
-    // "emitDecoratorMetadata": true,
 
     /* Advanced Options */
     "skipLibCheck": true,

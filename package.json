@@ -1,46 +1,54 @@
 {
-  "name": "@webf/identity",
+  "name": "@webf/iam-lite",
   "version": "0.1.0",
-  "description": "IAM system built on top of Postgres",
+  "description": "IAM system built on top of SQLite",
   "type": "module",
+  "exports": {
+    "./package.json": "./package.json"
+  },
   "scripts": {
-    "check:types": "npm run check:types --workspaces",
-    "build": "npm run build --workspaces",
-    "dev:pack": "tsx ./scripts/pack.ts",
-    "test:auth": "npm run test -w packages/auth",
-    "test:db:setup": "npm run test:db:setup -w packages/auth",
-    "test:db:teardown": "npm run test:db:teardown -w packages/auth"
+    "check:types": "tsc -p ./tsconfig.json",
+    "check:cycles": "tsx ./scripts/cycles.ts",
+    "prebuild": "rimraf ./dist",
+    "build": "tsc -p ./tsconfig.build.json",
+    "dev:format": "prettier --write ./src",
+    "generate": "drizzle-kit generate",
+    "test:legacy": "NODE_OPTIONS='--import tsx' node --test",
+    "test": "dotenvx run -f .env.test -- tsx --test 'test/**/*.spec.ts'",
+    "test:db:setup": "dotenvx run -f .env.test -- tsx ./test/helper/dbSetup.ts --clean",
+    "test:db:teardown": "dotenvx run -f .env.test -- tsx ./test/helper/dbCleanup.ts"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/webf-run/identity.git"
+    "url": "git+https://github.com/webf-run/iam-lite.git"
   },
   "license": "SEE LICENSE IN LICENSE",
   "keywords": [],
-  "workspaces": [
-    "packages/auth",
-    "packages/hono"
-  ],
+  "dependencies": {
+    "@types/better-sqlite3": "^7.6.13",
+    "argon2": "^0.43.0",
+    "better-sqlite3": "^11.10.0",
+    "crypto-random-string": "^5.0.0",
+    "drizzle-orm": "^0.44.2",
+    "nanoid": "^5.1.5",
+    "oauth4webapi": "^2.17.0",
+    "zod": "^3.25.67"
+  },
   "devDependencies": {
     "@dotenvx/dotenvx": "^0.38.0",
+    "@faker-js/faker": "^9.8.0",
+    "@trivago/prettier-plugin-sort-imports": "^5.2.2",
     "@types/madge": "^5.0.3",
     "@types/node": "^20.12.11",
-    "@typescript-eslint/eslint-plugin": "^6.21.0",
-    "@typescript-eslint/parser": "^6.21.0",
-    "dotenv": "^16.4.5",
-    "eslint": "^8.57.0",
-    "eslint-import-resolver-typescript": "^3.6.1",
-    "eslint-plugin-import": "^2.29.1",
-    "glob": "^10.3.15",
+    "drizzle-kit": "^0.31.1",
+    "glob": "^10.4.5",
     "madge": "^7.0.0",
+    "prettier": "^3.5.3",
     "rimraf": "^5.0.7",
-    "tsx": "^4.10.0",
-    "typescript": "^5.4.5"
-  },
-  "dependencies": {
-    "zod": "^3.23.8"
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.3"
   },
   "volta": {
-    "node": "22.2.0"
+    "node": "24.2.0"
   }
 }

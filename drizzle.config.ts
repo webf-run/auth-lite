@@ -1,15 +1,16 @@
 import type { Config } from 'drizzle-kit';
 
 export default {
-  schema: './src/auth/db/schema.ts',
-  out: './migrations/auth',
-  driver: 'pg',
+  dialect: 'sqlite',
+  schema: [
+    './src/Schema/Schema.ts',
+  ],
+  out: './migrations',
   dbCredentials: {
-    host: 'localhost',
-    port: 5432,
-    user: 'postgres',
-    password: 'postgres',
-    database: 'base',
+    url: 'file:./db.sqlite',
+  },
+  migrations: {
+    table: 'migration',
   },
   verbose: true,
   strict: true,

@@ -1,8 +1,0 @@
-{
-  "extends": "../../scripts/tsconfig.json",
-  "compilerOptions": {
-  },
-  "exclude": [
-    "dist/**/*"
-  ]
-}
