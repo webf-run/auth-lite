@@ -45,6 +45,23 @@ export type InvitationInput = {
   duration?: number;
 };
 
+export type Invitation = {
+  id: string;
+  code: string;
+
+  firstName: string;
+  lastName: string;
+  email: string;
+
+  duration: number;
+  expiryAt: Date;
+
+  tenantId: string;
+
+  createdAt: Date;
+  updatedAt: Date;
+};
+
 export type UserInput = {
   firstName: string;
   lastName: string;

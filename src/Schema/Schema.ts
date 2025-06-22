@@ -16,7 +16,7 @@ export const userEmail = sqliteTable('user_email', {
   id: text('id').primaryKey().notNull(),
 
   email: text('email').unique().notNull(),
-  verified: integer('verified', { mode: 'timestamp_ms' }).notNull(),
+  verified: integer('verified', { mode: 'boolean' }).notNull(),
 
   userId: text('user_id')
     .notNull()
