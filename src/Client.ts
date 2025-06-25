@@ -1,5 +1,9 @@
 import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
 
+import * as accessService from './ClientMethods/Access.js';
+import * as apiService from './ClientMethods/Api.js';
+import * as invitationService from './ClientMethods/Invitation.js';
+import * as userService from './ClientMethods/User.js';
 import {
   Access,
   ClientAppAccess,
@@ -13,10 +17,6 @@ import type {
   User,
   UserInput,
 } from './IAM/Type.js';
-import * as accessService from './Methods/Access.js';
-import * as apiService from './Methods/Api.js';
-import * as invitationService from './Methods/Invitation.js';
-import * as userService from './Methods/User.js';
 import { Nil } from './Type.js';
 import { Page } from './Utility.js';
 
