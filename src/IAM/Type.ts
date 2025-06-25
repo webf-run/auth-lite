@@ -56,8 +56,6 @@ export type Invitation = {
   duration: number;
   expiryAt: Date;
 
-  tenantId: string;
-
   createdAt: Date;
   updatedAt: Date;
 };

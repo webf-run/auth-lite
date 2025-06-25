@@ -14,7 +14,7 @@
     "dev:format": "prettier --write ./src",
     "generate": "drizzle-kit generate",
     "test:legacy": "NODE_OPTIONS='--import tsx' node --test",
-    "test": "dotenvx run -f .env.test -- tsx --test 'test/**/*.spec.ts'",
+    "test": "dotenvx run -f .env.test -- tsx --test 'src/test/**/*.test.ts' ",
     "test:db:setup": "dotenvx run -f .env.test -- tsx ./test/helper/dbSetup.ts --clean",
     "test:db:teardown": "dotenvx run -f .env.test -- tsx ./test/helper/dbCleanup.ts"
   },

@@ -1,4 +1,5 @@
 import { eq } from 'drizzle-orm';
+import { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
 
 import {
   Access,
@@ -7,18 +8,30 @@ import {
   UserAccess,
 } from '../IAM/Access.js';
 import { AuthToken, User } from '../IAM/Type.js';
-import { initIAMClient } from '../Main.js';
 import { userToken } from '../Schema/Schema.js';
 import { Nil } from '../Type.js';
 import { bearerToken } from '../Util/Code.js';
-import { findUserByToken } from './user.js';
+import { findUserByToken } from './User.js';
+
+export function isPublic(access: Access | null): access is UserAccess {
+  return !access || access?.type === 'public';
+}
+
+export function isUser(access: Access | null): access is UserAccess {
+  return access?.type === 'user';
+}
+
+export function isClient(access: Access | null): access is UserAccess {
+  return access?.type === 'client';
+}
 
 export async function findAccess(
+  db: BetterSQLite3Database,
   tokenType: string,
   token: string
 ): Promise<Nil<Access>> {
   if (tokenType.toLowerCase() === 'bearer') {
-    const user = await findUserByToken(token);
+    const user = await findUserByToken(db, token);
 
     if (!user) {
       return null;
@@ -49,12 +62,11 @@ export function clientAccess(key: ClientAppAccess['key']): ClientAppAccess {
   return { type: 'client', key };
 }
 
-export async function createToken(userId: string): Promise<Nil<AuthToken>> {
+export async function createToken(
+  db: BetterSQLite3Database,
+  userId: string
+): Promise<Nil<AuthToken>> {
   const tokenId = bearerToken();
-  const db = await initIAMClient({
-    databaseUrl: 'db.sqlite',
-    migrations: false,
-  });
 
   const added = await db
     .insert(userToken)
@@ -72,12 +84,10 @@ export async function createToken(userId: string): Promise<Nil<AuthToken>> {
   return { ...first, type: 'bearer' };
 }
 
-export async function deleteToken(token: string): Promise<Nil<AuthToken>> {
-  const db = await initIAMClient({
-    databaseUrl: 'db.sqlite',
-    migrations: false,
-  });
-
+export async function deleteToken(
+  db: BetterSQLite3Database,
+  token: string
+): Promise<Nil<AuthToken>> {
   const result = await db
     .delete(userToken)
     .where(eq(userToken.id, token))

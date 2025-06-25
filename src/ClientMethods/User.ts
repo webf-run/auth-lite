@@ -1,19 +1,16 @@
 import { eq } from 'drizzle-orm';
-import { email } from 'zod/v4';
+import { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
 
-import { IAMClient } from '../Client.js';
 import { User, UserEmail, UserInput } from '../IAM/Type.js';
-import { initIAMClient } from '../Main.js';
 import { providerLogin, user, userEmail, userToken } from '../Schema/Schema.js';
 import { Nil } from '../Type.js';
 import { pk } from '../Util/Code.js';
 import { Page } from '../Utility.js';
 
-export async function findUserByToken(token: string): Promise<Nil<User>> {
-  const db = await initIAMClient({
-    databaseUrl: 'db.sqlite',
-    migrations: false,
-  });
+export async function findUserByToken(
+  db: BetterSQLite3Database,
+  token: string
+): Promise<Nil<User>> {
   const result = await db
     .select()
     .from(userToken)
@@ -33,11 +30,10 @@ export async function findUserByToken(token: string): Promise<Nil<User>> {
   };
 }
 
-export async function createUser(userInput: UserInput): Promise<User> {
-  const db = await initIAMClient({
-    databaseUrl: 'db.sqlite',
-    migrations: false,
-  });
+export async function createUser(
+  db: BetterSQLite3Database,
+  userInput: UserInput
+): Promise<User> {
   const now = new Date();
   const newUser = {
     id: pk(),
@@ -61,11 +57,10 @@ export async function createUser(userInput: UserInput): Promise<User> {
   return { ...newUser, emails: newEmail };
 }
 
-export async function getUserById(userId: string): Promise<Nil<User>> {
-  const db = await initIAMClient({
-    databaseUrl: 'db.sqlite',
-    migrations: false,
-  });
+export async function getUserById(
+  db: BetterSQLite3Database,
+  userId: string
+): Promise<Nil<User>> {
   const userResult = await db
     .select()
     .from(user)
@@ -84,11 +79,10 @@ export async function getUserById(userId: string): Promise<Nil<User>> {
   };
 }
 
-export async function getUsers(page: Page): Promise<Nil<User[]>> {
-  const db = await initIAMClient({
-    databaseUrl: 'db.sqlite',
-    migrations: false,
-  });
+export async function getUsers(
+  db: BetterSQLite3Database,
+  page: Page
+): Promise<Nil<User[]>> {
   const fetchResult = await db
     .select()
     .from(user)
@@ -115,11 +109,10 @@ export async function getUsers(page: Page): Promise<Nil<User[]>> {
   return result;
 }
 
-export async function findUserByEmail(email: string): Promise<Nil<User>> {
-  const db = await initIAMClient({
-    databaseUrl: 'db.sqlite',
-    migrations: false,
-  });
+export async function findUserByEmail(
+  db: BetterSQLite3Database,
+  email: string
+): Promise<Nil<User>> {
   const result = await db
     .select()
     .from(userEmail)
@@ -138,11 +131,10 @@ export async function findUserByEmail(email: string): Promise<Nil<User>> {
   };
 }
 
-export async function findUserBySocialId(socialId: string): Promise<Nil<User>> {
-  const db = await initIAMClient({
-    databaseUrl: 'db.sqlite',
-    migrations: false,
-  });
+export async function findUserBySocialId(
+  db: BetterSQLite3Database,
+  socialId: string
+): Promise<Nil<User>> {
   const result = await db
     .select()
     .from(providerLogin)
@@ -162,6 +154,11 @@ export async function findUserBySocialId(socialId: string): Promise<Nil<User>> {
   };
 }
 
-export async function deleteUser(userId: string): Promise<boolean> {
-  throw new Error('Method not implemented.');
+export async function deleteUser(
+  db: BetterSQLite3Database,
+  userId: string
+): Promise<boolean> {
+  const result = await db.delete(user).where(eq(user.id, userId)).returning();
+
+  return result.at(0) !== undefined;
 }
