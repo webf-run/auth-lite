@@ -1,10 +1,4 @@
-import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
-
-import * as accessService from './ClientMethods/Access.js';
-import * as apiService from './ClientMethods/Api.js';
-import * as invitationService from './ClientMethods/Invitation.js';
-import * as userService from './ClientMethods/User.js';
-import {
+import type {
   Access,
   ClientAppAccess,
   PublicAccess,
@@ -17,13 +11,17 @@ import type {
   User,
   UserInput,
 } from './IAM/Type.js';
-import { Nil } from './Type.js';
-import { Page } from './Utility.js';
+import * as accessService from './Services/Access.js';
+import * as apiService from './Services/Api.js';
+import * as invitationService from './Services/Invitation.js';
+import * as userService from './Services/Users/User.js';
+import type { Nil, SQLDatabase } from './Type.js';
+import type { Page } from './Utility.js';
 
 export class IAMClient {
-  #db: BetterSQLite3Database;
+  #db: SQLDatabase;
 
-  constructor(db: BetterSQLite3Database) {
+  constructor(db: SQLDatabase) {
     this.#db = db;
   }
 
@@ -64,10 +62,7 @@ export class IAMClient {
   }
 
   /// Invitations
-  async createInvitation(
-    db: BetterSQLite3Database,
-    invitationInput: InvitationInput
-  ) {
+  async createInvitation(db: SQLDatabase, invitationInput: InvitationInput) {
     return invitationService.createInvitation(this.#db, invitationInput);
   }
 

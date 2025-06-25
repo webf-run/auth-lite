@@ -1,15 +1,15 @@
 import { and, eq } from 'drizzle-orm';
-import { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
 
-import { Access } from '../IAM/Access.js';
-import { ApiKey } from '../IAM/Type.js';
+import type { Access } from '../IAM/Access.js';
+import type { ApiKey } from '../IAM/Type.js';
 import { apiKey } from '../Schema/Schema.js';
+import type { SQLDatabase } from '../Type.js';
 import { apiKeyId, apiKeyToken } from '../Util/Code.js';
 import { verify } from '../Util/Hash.js';
 import { isClient } from './Access.js';
 
 export async function createApiKey(
-  db: BetterSQLite3Database,
+  db: SQLDatabase,
   access: Access,
   description: string
 ) {
@@ -23,7 +23,7 @@ export async function createApiKey(
 }
 
 export async function findApiKeyByToken(
-  db: BetterSQLite3Database,
+  db: SQLDatabase,
   token: string
 ): Promise<ApiKey> {
   const [id, ...rest] = token.split('.');
@@ -52,7 +52,7 @@ export async function findApiKeyByToken(
 }
 
 export async function generateApiKey(
-  db: BetterSQLite3Database,
+  db: SQLDatabase,
   description: string
 ): Promise<string> {
   const id = apiKeyId();

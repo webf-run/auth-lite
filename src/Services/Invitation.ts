@@ -1,17 +1,16 @@
 import { and, eq, gt } from 'drizzle-orm';
-import { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
 
 import { ONE_DAY_MS } from '../Constant.js';
-import { Access } from '../IAM/Access.js';
-import { Invitation, InvitationInput, User } from '../IAM/Type.js';
+import type { Access } from '../IAM/Access.js';
+import type { Invitation, InvitationInput, User } from '../IAM/Type.js';
 import { invitation } from '../Schema/Schema.js';
-import { Nil } from '../Type.js';
+import type { Nil, SQLDatabase } from '../Type.js';
 import { inviteCode, pk } from '../Util/Code.js';
 import { isPublic } from './Access.js';
-import { createUser, findUserByEmail } from './User.js';
+import { createUser, findUserByEmail } from './Users/User.js';
 
 export async function createInvitation(
-  db: BetterSQLite3Database,
+  db: SQLDatabase,
   invitationInput: InvitationInput
 ): Promise<Nil<Invitation>> {
   const duration = invitationInput.duration ?? 4 * ONE_DAY_MS;
@@ -36,7 +35,7 @@ export async function createInvitation(
 }
 
 export async function getInvitationById(
-  db: BetterSQLite3Database,
+  db: SQLDatabase,
   invitationId: string
 ): Promise<Nil<Invitation>> {
   const results = await db
@@ -48,7 +47,7 @@ export async function getInvitationById(
 }
 
 export async function findInvitationByCode(
-  db: BetterSQLite3Database,
+  db: SQLDatabase,
   code: string
 ): Promise<Nil<Invitation>> {
   const results = await db
@@ -60,7 +59,7 @@ export async function findInvitationByCode(
 }
 
 export async function claimInvitation(
-  db: BetterSQLite3Database,
+  db: SQLDatabase,
   access: Access,
   code: string,
   password: string
@@ -97,7 +96,7 @@ export async function claimInvitation(
 }
 
 export async function deleteInvitation(
-  db: BetterSQLite3Database,
+  db: SQLDatabase,
   invitationId: string
 ): Promise<boolean> {
   const results = await db

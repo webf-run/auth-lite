@@ -4,21 +4,20 @@ import { describe, it } from 'node:test';
 import { faker } from '@faker-js/faker';
 import { eq } from 'drizzle-orm';
 
-import { IAMClient } from '../Client.js';
-import { UserInput } from '../IAM/Type.js';
-import { initIAMClient } from '../Main.js';
-import { user, userEmail } from '../Schema/Schema.js';
-import { pk } from '../Util/Code.js';
-import { Page } from '../Utility.js';
+import { UserInput } from '../../IAM/Type.js';
+import { initIAMClient } from '../../Main.js';
+import { user, userEmail } from '../../Schema/Schema.js';
+import { pk } from '../../Util/Code.js';
+import { Page } from '../../Utility.js';
+import { createUser, getUserById, getUsers } from './User.js';
 
-describe('test user service', async () => {
+describe('User Services', async () => {
   const db = await initIAMClient({
     databaseUrl: 'db.sqlite',
     migrations: false,
   });
-  const iam = new IAMClient(db);
 
-  await it('Get Users', async () => {
+  it('should get Users', async () => {
     /// Setup data
     const request: Page = {
       number: 0,
@@ -26,14 +25,14 @@ describe('test user service', async () => {
     };
 
     /// SUT: System Under Test
-    const rs = await iam.getUsers(request);
+    const rs = await getUsers(db, request);
 
     /// Verify data
     notEqual(rs, null);
     equal(rs?.length > 0, true);
   });
 
-  await it('Create User', async () => {
+  it('should create a User', async () => {
     /// Setup data
     const newUser: UserInput = {
       firstName: faker.person.firstName(),
@@ -43,7 +42,7 @@ describe('test user service', async () => {
     };
 
     /// SUT: System Under Test
-    const result = await iam.createUser(newUser);
+    const result = await createUser(db, newUser);
 
     /// Verify data
     notEqual(result, undefined);
@@ -68,7 +67,7 @@ describe('test user service', async () => {
     await db.delete(userEmail).where(eq(userEmail.userId, result.id));
   });
 
-  await it('Get User by ID', async () => {
+  it('should get User by ID', async () => {
     /// Setup data
     const now = new Date();
     const newUser = {
@@ -93,7 +92,7 @@ describe('test user service', async () => {
     await db.insert(userEmail).values(newEmail);
 
     /// SUT: System Under Test
-    const userResult = await iam.getUserById(newUser.id);
+    const userResult = await getUserById(db, newUser.id);
 
     /// Verify data
     notEqual(userResult, null);

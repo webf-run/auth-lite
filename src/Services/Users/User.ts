@@ -1,14 +1,18 @@
 import { eq } from 'drizzle-orm';
-import { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
 
-import { User, UserEmail, UserInput } from '../IAM/Type.js';
-import { providerLogin, user, userEmail, userToken } from '../Schema/Schema.js';
-import { Nil } from '../Type.js';
-import { pk } from '../Util/Code.js';
-import { Page } from '../Utility.js';
+import type { User, UserEmail, UserInput } from '../../IAM/Type.js';
+import {
+  providerLogin,
+  user,
+  userEmail,
+  userToken,
+} from '../../Schema/Schema.js';
+import type { Nil, SQLDatabase } from '../../Type.js';
+import { pk } from '../../Util/Code.js';
+import type { Page } from '../../Utility.js';
 
 export async function findUserByToken(
-  db: BetterSQLite3Database,
+  db: SQLDatabase,
   token: string
 ): Promise<Nil<User>> {
   const result = await db
@@ -31,7 +35,7 @@ export async function findUserByToken(
 }
 
 export async function createUser(
-  db: BetterSQLite3Database,
+  db: SQLDatabase,
   userInput: UserInput
 ): Promise<User> {
   const now = new Date();
@@ -58,7 +62,7 @@ export async function createUser(
 }
 
 export async function getUserById(
-  db: BetterSQLite3Database,
+  db: SQLDatabase,
   userId: string
 ): Promise<Nil<User>> {
   const userResult = await db
@@ -80,7 +84,7 @@ export async function getUserById(
 }
 
 export async function getUsers(
-  db: BetterSQLite3Database,
+  db: SQLDatabase,
   page: Page
 ): Promise<Nil<User[]>> {
   const fetchResult = await db
@@ -110,7 +114,7 @@ export async function getUsers(
 }
 
 export async function findUserByEmail(
-  db: BetterSQLite3Database,
+  db: SQLDatabase,
   email: string
 ): Promise<Nil<User>> {
   const result = await db
@@ -132,7 +136,7 @@ export async function findUserByEmail(
 }
 
 export async function findUserBySocialId(
-  db: BetterSQLite3Database,
+  db: SQLDatabase,
   socialId: string
 ): Promise<Nil<User>> {
   const result = await db
@@ -155,7 +159,7 @@ export async function findUserBySocialId(
 }
 
 export async function deleteUser(
-  db: BetterSQLite3Database,
+  db: SQLDatabase,
   userId: string
 ): Promise<boolean> {
   const result = await db.delete(user).where(eq(user.id, userId)).returning();
