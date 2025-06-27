@@ -1,18 +1,13 @@
 import { eq } from 'drizzle-orm';
 
-import type { User, UserEmail, UserInput } from '../../IAM/Type.js';
-import {
-  providerLogin,
-  user,
-  userEmail,
-  userToken,
-} from '../../Schema/Schema.js';
-import type { Nil, SQLDatabase } from '../../Type.js';
-import { pk } from '../../Util/Code.js';
-import type { Page } from '../../Utility.js';
+import { providerLogin, user, userEmail, userToken } from '../Schema/Schema.js';
+import type { Nil, SQLite } from '../Type.js';
+import { pk } from '../Util/Code.js';
+import type { Page } from '../Utility.js';
+import type { User, UserEmail, UserInput } from './Type.js';
 
 export async function findUserByToken(
-  db: SQLDatabase,
+  db: SQLite,
   token: string
 ): Promise<Nil<User>> {
   const result = await db
@@ -29,13 +24,13 @@ export async function findUserByToken(
   }
 
   return {
-    ...found.app_user,
-    emails: result.map((val) => val.user_email),
+    ...found.appUser,
+    emails: result.map((val) => val.userEmail),
   };
 }
 
 export async function createUser(
-  db: SQLDatabase,
+  db: SQLite,
   userInput: UserInput
 ): Promise<User> {
   const now = new Date();
@@ -62,7 +57,7 @@ export async function createUser(
 }
 
 export async function getUserById(
-  db: SQLDatabase,
+  db: SQLite,
   userId: string
 ): Promise<Nil<User>> {
   const userResult = await db
@@ -78,15 +73,12 @@ export async function getUserById(
   }
 
   return {
-    ...found.app_user,
-    emails: userResult.map((val) => val.user_email),
+    ...found.appUser,
+    emails: userResult.map((val) => val.userEmail),
   };
 }
 
-export async function getUsers(
-  db: SQLDatabase,
-  page: Page
-): Promise<Nil<User[]>> {
+export async function getUsers(db: SQLite, page: Page): Promise<Nil<User[]>> {
   const fetchResult = await db
     .select()
     .from(user)
@@ -95,18 +87,18 @@ export async function getUsers(
     .offset(page.number * page.size);
 
   const result: Nil<User[]> = fetchResult.map((val) => ({
-    id: val.app_user.id,
-    firstName: val.app_user.firstName,
-    lastName: val.app_user.lastName,
-    createdAt: val.app_user.createdAt,
-    updatedAt: val.app_user.updatedAt,
+    id: val.appUser.id,
+    firstName: val.appUser.firstName,
+    lastName: val.appUser.lastName,
+    createdAt: val.appUser.createdAt,
+    updatedAt: val.appUser.updatedAt,
     emails: fetchResult
-      .filter((value) => value.user_email.userId === val.app_user.id)
+      .filter((value) => value.userEmail.userId === val.appUser.id)
       .map((e) => ({
-        id: e.user_email.id,
-        email: e.user_email.email,
-        userId: e.user_email.userId,
-        verified: e.user_email.verified,
+        id: e.userEmail.id,
+        email: e.userEmail.email,
+        userId: e.userEmail.userId,
+        verified: e.userEmail.verified,
       })),
   }));
 
@@ -114,7 +106,7 @@ export async function getUsers(
 }
 
 export async function findUserByEmail(
-  db: SQLDatabase,
+  db: SQLite,
   email: string
 ): Promise<Nil<User>> {
   const result = await db
@@ -130,13 +122,13 @@ export async function findUserByEmail(
   }
 
   return {
-    ...found.app_user,
-    emails: result.map((val) => val.user_email),
+    ...found.appUser,
+    emails: result.map((val) => val.userEmail),
   };
 }
 
 export async function findUserBySocialId(
-  db: SQLDatabase,
+  db: SQLite,
   socialId: string
 ): Promise<Nil<User>> {
   const result = await db
@@ -153,15 +145,12 @@ export async function findUserBySocialId(
   }
 
   return {
-    ...found.app_user,
-    emails: result.map((val) => val.user_email),
+    ...found.appUser,
+    emails: result.map((val) => val.userEmail),
   };
 }
 
-export async function deleteUser(
-  db: SQLDatabase,
-  userId: string
-): Promise<boolean> {
+export async function deleteUser(db: SQLite, userId: string): Promise<boolean> {
   const result = await db.delete(user).where(eq(user.id, userId)).returning();
 
   return result.at(0) !== undefined;

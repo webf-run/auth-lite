@@ -4,6 +4,9 @@ import type {
   PublicAccess,
   UserAccess,
 } from './IAM/Access.js';
+import * as accessService from './IAM/AccessService.js';
+import * as apiService from './IAM/ApiService.js';
+import * as invitationService from './IAM/InvitationService.js';
 import type {
   ApiKey,
   AuthToken,
@@ -11,17 +14,14 @@ import type {
   User,
   UserInput,
 } from './IAM/Type.js';
-import * as accessService from './Services/Access.js';
-import * as apiService from './Services/Api.js';
-import * as invitationService from './Services/Invitation.js';
-import * as userService from './Services/Users/User.js';
-import type { Nil, SQLDatabase } from './Type.js';
+import * as userService from './IAM/UserService.js';
+import type { Nil, SQLite } from './Type.js';
 import type { Page } from './Utility.js';
 
 export class IAMClient {
-  #db: SQLDatabase;
+  #db: SQLite;
 
-  constructor(db: SQLDatabase) {
+  constructor(db: SQLite) {
     this.#db = db;
   }
 
@@ -62,7 +62,7 @@ export class IAMClient {
   }
 
   /// Invitations
-  async createInvitation(db: SQLDatabase, invitationInput: InvitationInput) {
+  async createInvitation(db: SQLite, invitationInput: InvitationInput) {
     return invitationService.createInvitation(this.#db, invitationInput);
   }
 

@@ -1,16 +1,16 @@
 import { eq } from 'drizzle-orm';
 
+import { userToken } from '../Schema/Schema.js';
+import type { Nil, SQLite } from '../Type.js';
+import { bearerToken } from '../Util/Code.js';
 import type {
   Access,
   ClientAppAccess,
   PublicAccess,
   UserAccess,
-} from '../IAM/Access.js';
-import type { AuthToken, User } from '../IAM/Type.js';
-import { userToken } from '../Schema/Schema.js';
-import type { Nil, SQLDatabase } from '../Type.js';
-import { bearerToken } from '../Util/Code.js';
-import { findUserByToken } from './Users/User.js';
+} from './Access.js';
+import type { AuthToken, User } from './Type.js';
+import { findUserByToken } from './UserService.js';
 
 export function isPublic(access: Access | null): access is UserAccess {
   return !access || access?.type === 'public';
@@ -25,7 +25,7 @@ export function isClient(access: Access | null): access is UserAccess {
 }
 
 export async function findAccess(
-  db: SQLDatabase,
+  db: SQLite,
   tokenType: string,
   token: string
 ): Promise<Nil<Access>> {
@@ -62,7 +62,7 @@ export function clientAccess(key: ClientAppAccess['key']): ClientAppAccess {
 }
 
 export async function createToken(
-  db: SQLDatabase,
+  db: SQLite,
   userId: string
 ): Promise<Nil<AuthToken>> {
   const tokenId = bearerToken();
@@ -84,7 +84,7 @@ export async function createToken(
 }
 
 export async function deleteToken(
-  db: SQLDatabase,
+  db: SQLite,
   token: string
 ): Promise<Nil<AuthToken>> {
   const result = await db

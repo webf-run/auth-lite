@@ -1,8 +1,6 @@
-import { BetterSQLite3Database, drizzle } from 'drizzle-orm/better-sqlite3';
+import { drizzle } from 'drizzle-orm/better-sqlite3';
 
-import { OAuth2Client } from './OAuth/OAuth2Client.js';
-
-export type IAMClient = BetterSQLite3Database & { __iamClient: symbol };
+import { IAMClient } from './Client.js';
 
 export interface IAMClientOptions {
   databaseUrl: string;
@@ -14,12 +12,17 @@ export async function initIAMClient(
 ): Promise<IAMClient> {
   const { databaseUrl, migrations } = options;
 
-  const db = drizzle(databaseUrl);
+  const db = drizzle({
+    connection: databaseUrl,
+    casing: 'snake_case',
+  });
 
   if (migrations) {
     // Initialize migrations if needed
     // This is a placeholder for migration logic
   }
 
-  return db as any as IAMClient;
+  const iamClient = new IAMClient(db);
+
+  return iamClient;
 }

@@ -6,12 +6,19 @@
   "exports": {
     "./package.json": "./package.json"
   },
+  "imports": {
+    "#schema/helper": {
+      "development": "./src/Schema/Helper.ts",
+      "import": "./dist/Schema/Helper.js",
+      "default": "./src/Schema/Helper.ts"
+    }
+  },
   "scripts": {
     "check:types": "tsc -p ./tsconfig.json",
     "check:cycles": "tsx ./scripts/cycles.ts",
     "prebuild": "rimraf ./dist",
     "build": "tsc -p ./tsconfig.build.json",
-    "dev:format": "prettier --write ./src",
+    "dev:format": "prettier --write ./src ./scripts ./migrations",
     "generate": "drizzle-kit generate",
     "test:legacy": "NODE_OPTIONS='--import tsx' node --test",
     "test": "dotenvx run -f .env.test -- tsx --test 'src/**/*.test.ts' ",
@@ -29,6 +36,7 @@
     "argon2": "^0.43.0",
     "better-sqlite3": "^11.10.0",
     "crypto-random-string": "^5.0.0",
+    "decamelize": "^6.0.0",
     "drizzle-orm": "^0.44.2",
     "nanoid": "^5.1.5",
     "oauth4webapi": "^2.17.0",

@@ -1,15 +1,15 @@
 import { and, eq } from 'drizzle-orm';
 
-import type { Access } from '../IAM/Access.js';
-import type { ApiKey } from '../IAM/Type.js';
 import { apiKey } from '../Schema/Schema.js';
-import type { SQLDatabase } from '../Type.js';
+import type { SQLite } from '../Type.js';
 import { apiKeyId, apiKeyToken } from '../Util/Code.js';
 import { verify } from '../Util/Hash.js';
-import { isClient } from './Access.js';
+import type { Access } from './Access.js';
+import { isClient } from './AccessService.js';
+import type { ApiKey } from './Type.js';
 
 export async function createApiKey(
-  db: SQLDatabase,
+  db: SQLite,
   access: Access,
   description: string
 ) {
@@ -23,7 +23,7 @@ export async function createApiKey(
 }
 
 export async function findApiKeyByToken(
-  db: SQLDatabase,
+  db: SQLite,
   token: string
 ): Promise<ApiKey> {
   const [id, ...rest] = token.split('.');
@@ -52,7 +52,7 @@ export async function findApiKeyByToken(
 }
 
 export async function generateApiKey(
-  db: SQLDatabase,
+  db: SQLite,
   description: string
 ): Promise<string> {
   const id = apiKeyId();

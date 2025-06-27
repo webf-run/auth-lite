@@ -3,18 +3,18 @@ import { describe, it } from 'node:test';
 
 import { faker } from '@faker-js/faker';
 import { eq } from 'drizzle-orm';
+import { drizzle } from 'drizzle-orm/better-sqlite3';
 
-import { UserInput } from '../../IAM/Type.js';
-import { initIAMClient } from '../../Main.js';
-import { user, userEmail } from '../../Schema/Schema.js';
-import { pk } from '../../Util/Code.js';
-import { Page } from '../../Utility.js';
-import { createUser, getUserById, getUsers } from './User.js';
+import { user, userEmail } from '../Schema/Schema.js';
+import { pk } from '../Util/Code.js';
+import { Page } from '../Utility.js';
+import { UserInput } from './Type.js';
+import { createUser, getUserById, getUsers } from './UserService.js';
 
 describe('User Services', async () => {
-  const db = await initIAMClient({
-    databaseUrl: 'db.sqlite',
-    migrations: false,
+  const db = drizzle({
+    connection: 'sqlite::memory:',
+    casing: 'snake_case',
   });
 
   it('should get Users', async () => {
@@ -54,8 +54,8 @@ describe('User Services', async () => {
       .where(eq(user.id, result.id));
 
     const foundUser = {
-      ...userResult.at(0)?.app_user,
-      emails: userResult.map((val) => val.user_email.email),
+      ...userResult.at(0)?.appUser,
+      emails: userResult.map((val) => val.userEmail.email),
     };
 
     equal(foundUser?.firstName, newUser.firstName);

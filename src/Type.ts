@@ -6,6 +6,6 @@ import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
 export type Nil<T> = T | null | undefined;
 
 /**
- * Alias name for type BetterSQLite3Database.
+ * Alias name for type BetterSQLite3Database driver.
  */
-export type SQLDatabase = BetterSQLite3Database;
+export type SQLite = BetterSQLite3Database;
