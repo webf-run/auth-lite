@@ -3,12 +3,7 @@ import { eq } from 'drizzle-orm';
 import { userToken } from '../Schema/Schema.js';
 import type { Nil, SQLite } from '../Type.js';
 import { bearerToken } from '../Util/Code.js';
-import type {
-  Access,
-  ClientAppAccess,
-  PublicAccess,
-  UserAccess,
-} from './Access.js';
+import { Access, ClientAppAccess, PublicAccess, UserAccess } from './Access.js';
 import type { AuthToken, User } from './Type.js';
 import { findUserByToken } from './UserService.js';
 

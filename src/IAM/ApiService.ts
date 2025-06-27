@@ -5,15 +5,15 @@ import type { SQLite } from '../Type.js';
 import { apiKeyId, apiKeyToken } from '../Util/Code.js';
 import { verify } from '../Util/Hash.js';
 import type { Access } from './Access.js';
-import { isClient } from './AccessService.js';
-import type { ApiKey } from './Type.js';
+import { isPublic } from './AccessService.js';
+import { ApiKey } from './Type.js';
 
 export async function createApiKey(
   db: SQLite,
   access: Access,
   description: string
 ) {
-  if (!isClient(access)) {
+  if (!isPublic(access)) {
     throw 'not authorized';
   }
 

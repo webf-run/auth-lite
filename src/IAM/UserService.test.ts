@@ -5,6 +5,7 @@ import { faker } from '@faker-js/faker';
 import { eq } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/better-sqlite3';
 
+import { getDb } from '../../test/Db.js';
 import { user, userEmail } from '../Schema/Schema.js';
 import { pk } from '../Util/Code.js';
 import { Page } from '../Utility.js';
@@ -12,10 +13,7 @@ import { UserInput } from './Type.js';
 import { createUser, getUserById, getUsers } from './UserService.js';
 
 describe('User Services', async () => {
-  const db = drizzle({
-    connection: 'sqlite::memory:',
-    casing: 'snake_case',
-  });
+  const db = getDb();
 
   it('should get Users', async () => {
     /// Setup data
@@ -23,6 +21,8 @@ describe('User Services', async () => {
       number: 0,
       size: 10,
     };
+
+    console.log('Request:', request);
 
     /// SUT: System Under Test
     const rs = await getUsers(db, request);

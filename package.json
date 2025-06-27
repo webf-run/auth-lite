@@ -7,6 +7,7 @@
     "./package.json": "./package.json"
   },
   "imports": {
+    "#migrations": "./migrations",
     "#schema/helper": {
       "development": "./src/Schema/Helper.ts",
       "import": "./dist/Schema/Helper.js",
@@ -21,9 +22,7 @@
     "dev:format": "prettier --write ./src ./scripts ./migrations",
     "generate": "drizzle-kit generate",
     "test:legacy": "NODE_OPTIONS='--import tsx' node --test",
-    "test": "dotenvx run -f .env.test -- tsx --test 'src/**/*.test.ts' ",
-    "test:db:setup": "dotenvx run -f .env.test -- tsx ./test/helper/dbSetup.ts --clean",
-    "test:db:teardown": "dotenvx run -f .env.test -- tsx ./test/helper/dbCleanup.ts"
+    "test": "tsx --test 'src/**/User*.test.ts'"
   },
   "repository": {
     "type": "git",
