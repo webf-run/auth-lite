@@ -11,9 +11,9 @@ import type {
   User,
   UserInput,
 } from './IAM/Type.js';
-import * as accessService from './Services/Access.js';
-import * as apiService from './Services/Api.js';
-import * as invitationService from './Services/Invitation.js';
+import * as accessService from './Services/Access/Access.js';
+import * as apiService from './Services/Api/Api.js';
+import * as invitationService from './Services/Invitation/Invitation.js';
 import * as userService from './Services/Users/User.js';
 import type { Nil, SQLDatabase } from './Type.js';
 import type { Page } from './Utility.js';

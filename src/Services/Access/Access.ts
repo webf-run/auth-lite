@@ -1,16 +1,16 @@
 import { eq } from 'drizzle-orm';
 
-import type {
+import {
   Access,
   ClientAppAccess,
   PublicAccess,
   UserAccess,
-} from '../IAM/Access.js';
-import type { AuthToken, User } from '../IAM/Type.js';
-import { userToken } from '../Schema/Schema.js';
-import type { Nil, SQLDatabase } from '../Type.js';
-import { bearerToken } from '../Util/Code.js';
-import { findUserByToken } from './Users/User.js';
+} from '../../IAM/Access.js';
+import { AuthToken, User } from '../../IAM/Type.js';
+import { userToken } from '../../Schema/Schema.js';
+import { Nil, SQLDatabase } from '../../Type.js';
+import { bearerToken } from '../../Util/Code.js';
+import { findUserByToken } from '../Users/User.js';
 
 export function isPublic(access: Access | null): access is UserAccess {
   return !access || access?.type === 'public';

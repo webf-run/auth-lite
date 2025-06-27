@@ -1,19 +1,19 @@
 import { and, eq } from 'drizzle-orm';
 
-import type { Access } from '../IAM/Access.js';
-import type { ApiKey } from '../IAM/Type.js';
-import { apiKey } from '../Schema/Schema.js';
-import type { SQLDatabase } from '../Type.js';
-import { apiKeyId, apiKeyToken } from '../Util/Code.js';
-import { verify } from '../Util/Hash.js';
-import { isClient } from './Access.js';
+import type { Access } from '../../IAM/Access.js';
+import type { ApiKey } from '../../IAM/Type.js';
+import { apiKey } from '../../Schema/Schema.js';
+import type { SQLDatabase } from '../../Type.js';
+import { apiKeyId, apiKeyToken } from '../../Util/Code.js';
+import { verify } from '../../Util/Hash.js';
+import { isPublic } from '../Access/Access.js';
 
 export async function createApiKey(
   db: SQLDatabase,
   access: Access,
   description: string
 ) {
-  if (!isClient(access)) {
+  if (!isPublic(access)) {
     throw 'not authorized';
   }
 
