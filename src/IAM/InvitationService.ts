@@ -2,16 +2,16 @@ import { and, eq, gt } from 'drizzle-orm';
 
 import { ONE_DAY_MS } from '../Constant.js';
 import { invitation } from '../Schema/Schema.js';
-import type { Nil, SQLite } from '../Type.js';
+import type { Drizzle, Nil } from '../Type.js';
 import { inviteCode, pk } from '../Util/Code.js';
-import type { Access } from './Access.js';
 import { isPublic } from './AccessService.js';
+import type { Access } from './AccessType.js';
 import type { Invitation, InvitationInput } from './Type.js';
 import { createUser, findUserByEmail } from './UserService.js';
 import type { User } from './UserType.js';
 
 export async function createInvitation(
-  db: SQLite,
+  db: Drizzle,
   invitationInput: InvitationInput
 ): Promise<Nil<Invitation>> {
   const duration = invitationInput.duration ?? 4 * ONE_DAY_MS;
@@ -36,7 +36,7 @@ export async function createInvitation(
 }
 
 export async function getInvitationById(
-  db: SQLite,
+  db: Drizzle,
   invitationId: string
 ): Promise<Nil<Invitation>> {
   const results = await db
@@ -48,7 +48,7 @@ export async function getInvitationById(
 }
 
 export async function findInvitationByCode(
-  db: SQLite,
+  db: Drizzle,
   code: string
 ): Promise<Nil<Invitation>> {
   const results = await db
@@ -60,7 +60,7 @@ export async function findInvitationByCode(
 }
 
 export async function claimInvitation(
-  db: SQLite,
+  db: Drizzle,
   access: Access,
   code: string,
   password: string
@@ -97,7 +97,7 @@ export async function claimInvitation(
 }
 
 export async function deleteInvitation(
-  db: SQLite,
+  db: Drizzle,
   invitationId: string
 ): Promise<boolean> {
   const results = await db

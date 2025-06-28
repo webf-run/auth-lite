@@ -1,14 +1,14 @@
 import { eq } from 'drizzle-orm';
 
 import { userToken } from '../Schema/Schema.js';
-import type { Nil, SQLite } from '../Type.js';
+import type { Drizzle, Nil } from '../Type.js';
 import { bearerToken } from '../Util/Code.js';
 import type {
   Access,
   ClientAppAccess,
   PublicAccess,
   UserAccess,
-} from './Access.js';
+} from './AccessType.js';
 import type { AuthToken } from './Type.js';
 import { findUserByToken } from './UserService.js';
 import type { User } from './UserType.js';
@@ -26,7 +26,7 @@ export function isClient(access: Access | null): access is UserAccess {
 }
 
 export async function findAccess(
-  db: SQLite,
+  db: Drizzle,
   tokenType: string,
   token: string
 ): Promise<Nil<Access>> {
@@ -50,20 +50,8 @@ export async function findAccess(
   return publicAccess();
 }
 
-export function userAccess(user: User): UserAccess {
-  return { type: 'user', user };
-}
-
-export function publicAccess(): PublicAccess {
-  return { type: 'public' };
-}
-
-export function clientAccess(key: ClientAppAccess['key']): ClientAppAccess {
-  return { type: 'client', key };
-}
-
 export async function createToken(
-  db: SQLite,
+  db: Drizzle,
   userId: string
 ): Promise<Nil<AuthToken>> {
   const tokenId = bearerToken();
@@ -85,7 +73,7 @@ export async function createToken(
 }
 
 export async function deleteToken(
-  db: SQLite,
+  db: Drizzle,
   token: string
 ): Promise<Nil<AuthToken>> {
   const result = await db
@@ -100,4 +88,16 @@ export async function deleteToken(
   }
 
   return { ...found, type: 'bearer' };
+}
+
+export function userAccess(user: User): UserAccess {
+  return { type: 'user', user };
+}
+
+export function publicAccess(): PublicAccess {
+  return { type: 'public' };
+}
+
+export function clientAccess(key: ClientAppAccess['key']): ClientAppAccess {
+  return { type: 'client', key };
 }

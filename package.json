@@ -19,7 +19,7 @@
     "check:cycles": "tsx ./scripts/cycles.ts",
     "prebuild": "rimraf ./dist",
     "build": "tsc -p ./tsconfig.build.json",
-    "dev:format": "prettier --write ./src ./scripts ./migrations",
+    "dev:format": "prettier --write ./src ./test ./scripts ./migrations",
     "generate": "drizzle-kit generate",
     "test:legacy": "NODE_OPTIONS='--import tsx' node --test",
     "test": "tsx --test 'src/**/User*.test.ts'"

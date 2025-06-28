@@ -1,40 +1,23 @@
-import type {
-  Access,
-  ClientAppAccess,
-  PublicAccess,
-  UserAccess,
-} from './IAM/Access.js';
 import * as accessService from './IAM/AccessService.js';
+import type { Access } from './IAM/AccessType.js';
 import * as apiService from './IAM/ApiService.js';
 import * as invitationService from './IAM/InvitationService.js';
 import type { ApiKey, AuthToken, InvitationInput } from './IAM/Type.js';
 import * as userService from './IAM/UserService.js';
-import type { User, UserInput } from './IAM/UserType.js';
-import type { Nil, SQLite } from './Type.js';
+import type { UserInput } from './IAM/UserType.js';
+import type { Drizzle, Nil } from './Type.js';
 import type { Page } from './Utility.js';
 
 export class IAMClient {
-  #db: SQLite;
+  #db: Drizzle;
 
-  constructor(db: SQLite) {
+  constructor(db: Drizzle) {
     this.#db = db;
   }
 
   /// Authentication
   async findAccess(tokenType: string, token: string): Promise<Nil<Access>> {
     return accessService.findAccess(this.#db, tokenType, token);
-  }
-
-  userAccess(user: User): UserAccess {
-    return accessService.userAccess(user);
-  }
-
-  publicAccess(): PublicAccess {
-    return accessService.publicAccess();
-  }
-
-  clientAccess(key: ClientAppAccess['key']): ClientAppAccess {
-    return accessService.clientAccess(key);
   }
 
   async createToken(userId: string): Promise<Nil<AuthToken>> {
@@ -57,7 +40,7 @@ export class IAMClient {
   }
 
   /// Invitations
-  async createInvitation(db: SQLite, invitationInput: InvitationInput) {
+  async createInvitation(db: Drizzle, invitationInput: InvitationInput) {
     return invitationService.createInvitation(this.#db, invitationInput);
   }
 

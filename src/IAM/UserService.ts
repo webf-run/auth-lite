@@ -1,13 +1,13 @@
 import { eq } from 'drizzle-orm';
 
 import { providerLogin, user, userEmail, userToken } from '../Schema/Schema.js';
-import type { Nil, SQLite } from '../Type.js';
+import type { Drizzle, Nil } from '../Type.js';
 import { pk } from '../Util/Code.js';
 import type { Page } from '../Utility.js';
 import type { User, UserEmail, UserInput } from './UserType.js';
 
 export async function findUserByToken(
-  db: SQLite,
+  db: Drizzle,
   token: string
 ): Promise<Nil<User>> {
   const result = await db
@@ -30,7 +30,7 @@ export async function findUserByToken(
 }
 
 export async function createUser(
-  db: SQLite,
+  db: Drizzle,
   userInput: UserInput
 ): Promise<User> {
   const now = new Date();
@@ -57,7 +57,7 @@ export async function createUser(
 }
 
 export async function getUserById(
-  db: SQLite,
+  db: Drizzle,
   userId: string
 ): Promise<Nil<User>> {
   const userResult = await db
@@ -78,7 +78,7 @@ export async function getUserById(
   };
 }
 
-export async function getUsers(db: SQLite, page: Page): Promise<Nil<User[]>> {
+export async function getUsers(db: Drizzle, page: Page): Promise<Nil<User[]>> {
   const fetchResult = await db
     .select()
     .from(user)
@@ -106,7 +106,7 @@ export async function getUsers(db: SQLite, page: Page): Promise<Nil<User[]>> {
 }
 
 export async function findUserByEmail(
-  db: SQLite,
+  db: Drizzle,
   email: string
 ): Promise<Nil<User>> {
   const result = await db
@@ -128,7 +128,7 @@ export async function findUserByEmail(
 }
 
 export async function findUserBySocialId(
-  db: SQLite,
+  db: Drizzle,
   socialId: string
 ): Promise<Nil<User>> {
   const result = await db
@@ -150,7 +150,10 @@ export async function findUserBySocialId(
   };
 }
 
-export async function deleteUser(db: SQLite, userId: string): Promise<boolean> {
+export async function deleteUser(
+  db: Drizzle,
+  userId: string
+): Promise<boolean> {
   const result = await db.delete(user).where(eq(user.id, userId)).returning();
 
   return result.at(0) !== undefined;

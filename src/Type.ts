@@ -8,4 +8,4 @@ export type Nil<T> = T | null | undefined;
 /**
  * Alias name for type BetterSQLite3Database driver.
  */
-export type SQLite = BetterSQLite3Database;
+export type Drizzle = BetterSQLite3Database;

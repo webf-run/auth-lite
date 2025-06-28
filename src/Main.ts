@@ -1,9 +1,7 @@
-import Database from 'better-sqlite3';
-import { eq } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/better-sqlite3';
 
 import { IAMClient } from './Client.js';
-import { user } from './Schema/Schema.js';
+import { makeSQLiteClient } from './Db/SQLite.js';
 
 export interface IAMClientOptions {
   databaseUrl: string;
@@ -15,8 +13,10 @@ export async function initIAMClient(
 ): Promise<IAMClient> {
   const { databaseUrl, migrations } = options;
 
+  const sqlite = makeSQLiteClient(databaseUrl);
+
   const db = drizzle({
-    connection: databaseUrl,
+    client: sqlite,
     casing: 'snake_case',
   });
 
