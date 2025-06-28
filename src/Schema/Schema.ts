@@ -1,8 +1,8 @@
-import { integer, sqliteTable, text, unique } from 'drizzle-orm/sqlite-core';
+import { integer, text, unique } from 'drizzle-orm/sqlite-core';
 
-import { timestampMS } from './Helper.js';
+import { table, timestampMS } from '#schema/helper';
 
-export const user = sqliteTable('app_user', {
+export const user = table('appUser', {
   id: text('id').primaryKey().notNull(),
 
   firstName: text('first_name').notNull(),
@@ -12,19 +12,19 @@ export const user = sqliteTable('app_user', {
   updatedAt: timestampMS('updated_at').notNull(),
 });
 
-export const userEmail = sqliteTable('user_email', {
+export const userEmail = table('userEmail', {
   id: text('id').primaryKey().notNull(),
 
   email: text('email').unique().notNull(),
-  verified: integer('verified', { mode: 'timestamp_ms' }).notNull(),
+  verified: integer('verified', { mode: 'boolean' }).notNull(),
 
   userId: text('user_id')
     .notNull()
     .references(() => user.id, { onDelete: 'cascade' }),
 });
 
-export const providerLogin = sqliteTable(
-  'provider_login',
+export const providerLogin = table(
+  'providerLogin',
   {
     id: text('id').primaryKey(),
 
@@ -38,7 +38,7 @@ export const providerLogin = sqliteTable(
   (t) => [unique('provider_unique_id').on(t.providerId, t.subjectId)]
 );
 
-export const invitation = sqliteTable('invitation', {
+export const invitation = table('invitation', {
   id: text('id').primaryKey(),
   code: text('code').unique().notNull(),
 
@@ -56,7 +56,7 @@ export const invitation = sqliteTable('invitation', {
   updatedAt: timestampMS('updated_at').notNull(),
 });
 
-export const userToken = sqliteTable('user_token', {
+export const userToken = table('userToken', {
   id: text('id').primaryKey(),
 
   generatedAt: timestampMS('generated_at').notNull(),
@@ -71,7 +71,7 @@ export const userToken = sqliteTable('user_token', {
     .references(() => user.id, { onDelete: 'cascade' }),
 });
 
-export const apiKey = sqliteTable('api_key', {
+export const apiKey = table('apiKey', {
   id: text('id').primaryKey().notNull(),
   description: text('description').notNull(),
 

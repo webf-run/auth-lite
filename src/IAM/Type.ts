@@ -6,24 +6,6 @@ export interface ApiKey {
   updatedAt: Date;
 }
 
-export interface User {
-  id: string;
-  firstName: string;
-  lastName: string;
-
-  createdAt: Date;
-  updatedAt: Date;
-
-  emails: UserEmail[];
-}
-
-export interface UserEmail {
-  id: string;
-  email: string;
-  verified: boolean;
-  userId: string;
-}
-
 export type ExternalProfile = {
   provider: string;
   subjectId: string;
@@ -45,9 +27,17 @@ export type InvitationInput = {
   duration?: number;
 };
 
-export type UserInput = {
+export type Invitation = {
+  id: string;
+  code: string;
+
   firstName: string;
   lastName: string;
+  email: string;
 
-  emails: string[];
+  duration: number;
+  expiryAt: Date;
+
+  createdAt: Date;
+  updatedAt: Date;
 };

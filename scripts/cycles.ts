@@ -1,7 +1,6 @@
 import madge from 'madge';
 
 async function main() {
-
   const results = await madge('./src', {
     baseDir: process.cwd(),
     includeNpm: false,

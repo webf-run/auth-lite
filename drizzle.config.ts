@@ -12,6 +12,7 @@ export default {
   migrations: {
     table: 'migration',
   },
+  casing: 'snake_case',
   verbose: true,
   strict: true,
 } satisfies Config;

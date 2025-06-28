@@ -1,4 +1,4 @@
-import cryptoRandomString, { Options } from 'crypto-random-string';
+import cryptoRandomString, { type Options } from 'crypto-random-string';
 import { customAlphabet, nanoid } from 'nanoid';
 
 import { hash } from './Hash.js';
@@ -23,7 +23,7 @@ export function bearerToken(): string {
 export function apiKeyId(): string {
   const nanoid = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', 24);
 
-  return 'webf_' + nanoid();
+  return 'webf|' + nanoid();
 }
 
 export async function apiKeyToken() {

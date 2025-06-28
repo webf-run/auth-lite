@@ -1,10 +1,18 @@
-import { customType, integer } from 'drizzle-orm/sqlite-core';
+import decamelize from 'decamelize';
+import {
+  customType,
+  integer,
+  sqliteTableCreator,
+} from 'drizzle-orm/sqlite-core';
 
 export interface CustomTimestampConfig {
   data: Date;
   driverData: string;
   config: never;
 }
+
+/** Same as `sqliteTable` but helps with casing. */
+export const table = sqliteTableCreator(decamelize);
 
 export const timestampMS = (columnName: string) =>
   integer(columnName, {

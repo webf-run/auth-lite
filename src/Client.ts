@@ -1,86 +1,88 @@
-import { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
-
-import type { Access } from './IAM/Access.js';
-import type { AuthToken, User, UserInput } from './IAM/Type.js';
-import type { Nil } from './Type.js';
+import type {
+  Access,
+  ClientAppAccess,
+  PublicAccess,
+  UserAccess,
+} from './IAM/Access.js';
+import * as accessService from './IAM/AccessService.js';
+import * as apiService from './IAM/ApiService.js';
+import * as invitationService from './IAM/InvitationService.js';
+import type { ApiKey, AuthToken, InvitationInput } from './IAM/Type.js';
+import * as userService from './IAM/UserService.js';
+import type { User, UserInput } from './IAM/UserType.js';
+import type { Nil, SQLite } from './Type.js';
 import type { Page } from './Utility.js';
 
 export class IAMClient {
-  #db: BetterSQLite3Database;
+  #db: SQLite;
 
-  constructor(db: BetterSQLite3Database) {
+  constructor(db: SQLite) {
     this.#db = db;
   }
 
   /// Authentication
   async findAccess(tokenType: string, token: string): Promise<Nil<Access>> {
-    throw new Error('Method not implemented.');
+    return accessService.findAccess(this.#db, tokenType, token);
   }
 
-  async createToken(userId: string): Promise<AuthToken> {
-    throw new Error('Method not implemented.');
+  userAccess(user: User): UserAccess {
+    return accessService.userAccess(user);
   }
 
-  async deleteToken(token: string): Promise<boolean> {
-    throw new Error('Method not implemented.');
+  publicAccess(): PublicAccess {
+    return accessService.publicAccess();
+  }
+
+  clientAccess(key: ClientAppAccess['key']): ClientAppAccess {
+    return accessService.clientAccess(key);
+  }
+
+  async createToken(userId: string): Promise<Nil<AuthToken>> {
+    return accessService.createToken(this.#db, userId);
+  }
+
+  async deleteToken(token: string): Promise<Nil<AuthToken>> {
+    return accessService.deleteToken(this.#db, token);
   }
 
   /// Users
-  async createUser(user: UserInput): Promise<User> {
-    throw new Error('Method not implemented.');
+  createUser(input: UserInput) {
+    return userService.createUser(this.#db, input);
   }
-
-  async getUserById(userId: string): Promise<User> {
-    throw new Error('Method not implemented.');
+  getUserById(id: string) {
+    return userService.getUserById(this.#db, id);
   }
-
-  async getUsers(page: Page): Promise<Nil<User[]>> {
-    throw new Error('Method not implemented.');
-  }
-
-  async findUserByEmail(email: string): Promise<Nil<User>> {
-    throw new Error('Method not implemented.');
-  }
-
-  async findUserBySocialId(socialId: string): Promise<Nil<User>> {
-    throw new Error('Method not implemented.');
-  }
-
-  async findUserByToken(token: string): Promise<Nil<User>> {
-    throw new Error('Method not implemented.');
-  }
-
-  async deleteUser(userId: string): Promise<boolean> {
-    throw new Error('Method not implemented.');
+  getUsers(page: Page) {
+    return userService.getUsers(this.#db, page);
   }
 
   /// Invitations
-  async createInvitation() {
-    throw new Error('Method not implemented.');
+  async createInvitation(db: SQLite, invitationInput: InvitationInput) {
+    return invitationService.createInvitation(this.#db, invitationInput);
   }
 
-  async getInvitationById() {
-    throw new Error('Method not implemented.');
+  async getInvitationById(invitationId: string) {
+    return invitationService.getInvitationById(this.#db, invitationId);
   }
 
-  async findInvitationByCode() {
-    throw new Error('Method not implemented.');
+  async findInvitationByCode(code: string) {
+    return invitationService.findInvitationByCode(this.#db, code);
   }
 
-  async claimInvitation() {
-    throw new Error('Method not implemented.');
+  async claimInvitation(access: Access, code: string, password: string) {
+    return invitationService.claimInvitation(this.#db, access, code, password);
   }
 
-  async deleteInvitation() {
-    throw new Error('Method not implemented.');
+  async deleteInvitation(invitationId: string) {
+    return invitationService.deleteInvitation(this.#db, invitationId);
   }
 
   /// API Keys
-  async createApiKey() {
-    throw new Error('Method not implemented.');
+  async createApiKey(access: Access, description: string) {
+    return apiService.createApiKey(this.#db, access, description);
   }
 
-  async findApiKeyByToken(token: string) {
-    throw new Error('Method not implemented.');
+  async findApiKeyByToken(token: string): Promise<ApiKey> {
+    return apiService.findApiKeyByToken(this.#db, token);
   }
 }

@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "f9cd6f5f-67de-45be-9291-4320a8c5e832",
+  "id": "7eb72c09-7590-44b9-8323-4205cd617f97",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "api_key": {
@@ -133,9 +133,7 @@
       "indexes": {
         "invitation_code_unique": {
           "name": "invitation_code_unique",
-          "columns": [
-            "code"
-          ],
+          "columns": ["code"],
           "isUnique": true
         }
       },
@@ -179,10 +177,7 @@
       "indexes": {
         "provider_unique_id": {
           "name": "provider_unique_id",
-          "columns": [
-            "provider_id",
-            "subject_id"
-          ],
+          "columns": ["provider_id", "subject_id"],
           "isUnique": true
         }
       },
@@ -191,12 +186,8 @@
           "name": "provider_login_user_id_app_user_id_fk",
           "tableFrom": "provider_login",
           "tableTo": "app_user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -285,9 +276,7 @@
       "indexes": {
         "user_email_email_unique": {
           "name": "user_email_email_unique",
-          "columns": [
-            "email"
-          ],
+          "columns": ["email"],
           "isUnique": true
         }
       },
@@ -296,12 +285,8 @@
           "name": "user_email_user_id_app_user_id_fk",
           "tableFrom": "user_email",
           "tableTo": "app_user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -348,12 +333,8 @@
           "name": "user_token_user_id_app_user_id_fk",
           "tableFrom": "user_token",
           "tableTo": "app_user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
