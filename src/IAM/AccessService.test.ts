@@ -7,8 +7,8 @@ import { eq } from 'drizzle-orm';
 import { getDb } from '../../test/Db.js';
 import { user, userEmail, userToken } from '../Schema/Schema.js';
 import { createToken, deleteToken, findAccess } from './AccessService.js';
-import { UserInput } from './Type.js';
 import { createUser } from './UserService.js';
+import { type UserInput } from './UserType.js';
 
 describe('Access Services', async () => {
   const db = getDb();

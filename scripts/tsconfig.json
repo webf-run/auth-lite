@@ -12,6 +12,7 @@
 
     /* Strict Type-Checking Options */
     "strict": true,
+    "verbatimModuleSyntax": true,
 
     /* Additional Checks */
     // "noUnusedLocals": true,

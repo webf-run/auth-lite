@@ -6,7 +6,7 @@ import { apiKeyId, apiKeyToken } from '../Util/Code.js';
 import { verify } from '../Util/Hash.js';
 import type { Access } from './Access.js';
 import { isPublic } from './AccessService.js';
-import { ApiKey } from './Type.js';
+import type { ApiKey } from './Type.js';
 
 export async function createApiKey(
   db: SQLite,

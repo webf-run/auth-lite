@@ -1,7 +1,7 @@
 import * as oauth from 'oauth4webapi';
 import type { AuthorizationServer, Client } from 'oauth4webapi';
 
-import { OAuthProfile } from './OAuthType.js';
+import { type OAuthProfile } from './OAuthType.js';
 
 export type OAuth2Options = {
   clientId: string;

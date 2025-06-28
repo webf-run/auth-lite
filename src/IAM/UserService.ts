@@ -4,7 +4,7 @@ import { providerLogin, user, userEmail, userToken } from '../Schema/Schema.js';
 import type { Nil, SQLite } from '../Type.js';
 import { pk } from '../Util/Code.js';
 import type { Page } from '../Utility.js';
-import type { User, UserEmail, UserInput } from './Type.js';
+import type { User, UserEmail, UserInput } from './UserType.js';
 
 export async function findUserByToken(
   db: SQLite,

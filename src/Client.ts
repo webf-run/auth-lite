@@ -7,14 +7,9 @@ import type {
 import * as accessService from './IAM/AccessService.js';
 import * as apiService from './IAM/ApiService.js';
 import * as invitationService from './IAM/InvitationService.js';
-import type {
-  ApiKey,
-  AuthToken,
-  InvitationInput,
-  User,
-  UserInput,
-} from './IAM/Type.js';
+import type { ApiKey, AuthToken, InvitationInput } from './IAM/Type.js';
 import * as userService from './IAM/UserService.js';
+import type { User, UserInput } from './IAM/UserType.js';
 import type { Nil, SQLite } from './Type.js';
 import type { Page } from './Utility.js';
 

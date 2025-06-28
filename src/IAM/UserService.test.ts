@@ -3,17 +3,53 @@ import { describe, it } from 'node:test';
 
 import { faker } from '@faker-js/faker';
 import { eq } from 'drizzle-orm';
-import { drizzle } from 'drizzle-orm/better-sqlite3';
 
 import { getDb } from '../../test/Db.js';
 import { user, userEmail } from '../Schema/Schema.js';
 import { pk } from '../Util/Code.js';
-import { Page } from '../Utility.js';
-import { UserInput } from './Type.js';
+import { type Page } from '../Utility.js';
 import { createUser, getUserById, getUsers } from './UserService.js';
+import { type UserInput } from './UserType.js';
 
-describe('User Services', async () => {
+describe('[Service]: User', async () => {
   const db = getDb();
+
+  describe('createUser', () => {
+    it('should create a user', async () => {
+      /// Setup data
+      const newUser: UserInput = {
+        firstName: faker.person.firstName(),
+        lastName: faker.person.lastName(),
+
+        emails: [faker.internet.email(), faker.internet.email()],
+      };
+
+      /// SUT: System Under Test
+      const result = await createUser(db, newUser);
+
+      /// Verify data
+      notEqual(result, undefined);
+
+      const userResult = await db
+        .select()
+        .from(user)
+        .innerJoin(userEmail, eq(userEmail.userId, result.id))
+        .where(eq(user.id, result.id));
+
+      const foundUser = {
+        ...userResult.at(0)?.appUser,
+        emails: userResult.map((val) => val.userEmail.email),
+      };
+
+      equal(foundUser?.firstName, newUser.firstName);
+      equal(foundUser?.lastName, newUser.lastName);
+      deepEqual(foundUser?.emails, newUser.emails);
+
+      /// Teardown
+      await db.delete(user).where(eq(user.id, result.id));
+      await db.delete(userEmail).where(eq(userEmail.userId, result.id));
+    });
+  });
 
   it('should get Users', async () => {
     /// Setup data
@@ -30,41 +66,6 @@ describe('User Services', async () => {
     /// Verify data
     notEqual(rs, null);
     equal(rs?.length > 0, true);
-  });
-
-  it('should create a User', async () => {
-    /// Setup data
-    const newUser: UserInput = {
-      firstName: faker.person.firstName(),
-      lastName: faker.person.lastName(),
-
-      emails: [faker.internet.email(), faker.internet.email()],
-    };
-
-    /// SUT: System Under Test
-    const result = await createUser(db, newUser);
-
-    /// Verify data
-    notEqual(result, undefined);
-
-    const userResult = await db
-      .select()
-      .from(user)
-      .innerJoin(userEmail, eq(userEmail.userId, result.id))
-      .where(eq(user.id, result.id));
-
-    const foundUser = {
-      ...userResult.at(0)?.appUser,
-      emails: userResult.map((val) => val.userEmail.email),
-    };
-
-    equal(foundUser?.firstName, newUser.firstName);
-    equal(foundUser?.lastName, newUser.lastName);
-    deepEqual(foundUser?.emails, newUser.emails);
-
-    /// Teardown
-    await db.delete(user).where(eq(user.id, result.id));
-    await db.delete(userEmail).where(eq(userEmail.userId, result.id));
   });
 
   it('should get User by ID', async () => {

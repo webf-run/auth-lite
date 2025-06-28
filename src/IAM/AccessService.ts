@@ -3,9 +3,15 @@ import { eq } from 'drizzle-orm';
 import { userToken } from '../Schema/Schema.js';
 import type { Nil, SQLite } from '../Type.js';
 import { bearerToken } from '../Util/Code.js';
-import { Access, ClientAppAccess, PublicAccess, UserAccess } from './Access.js';
-import type { AuthToken, User } from './Type.js';
+import type {
+  Access,
+  ClientAppAccess,
+  PublicAccess,
+  UserAccess,
+} from './Access.js';
+import type { AuthToken } from './Type.js';
 import { findUserByToken } from './UserService.js';
+import type { User } from './UserType.js';
 
 export function isPublic(access: Access | null): access is UserAccess {
   return !access || access?.type === 'public';

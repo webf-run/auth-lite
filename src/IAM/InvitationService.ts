@@ -6,8 +6,9 @@ import type { Nil, SQLite } from '../Type.js';
 import { inviteCode, pk } from '../Util/Code.js';
 import type { Access } from './Access.js';
 import { isPublic } from './AccessService.js';
-import type { Invitation, InvitationInput, User } from './Type.js';
+import type { Invitation, InvitationInput } from './Type.js';
 import { createUser, findUserByEmail } from './UserService.js';
+import type { User } from './UserType.js';
 
 export async function createInvitation(
   db: SQLite,

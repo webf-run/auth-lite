@@ -1,4 +1,4 @@
-import { equal, notEqual } from 'node:assert';
+import { equal, notEqual, ok } from 'node:assert';
 import { describe, it } from 'node:test';
 
 import { faker } from '@faker-js/faker';
@@ -13,7 +13,7 @@ import {
   findInvitationByCode,
   getInvitationById,
 } from './InvitationService.js';
-import { InvitationInput } from './Type.js';
+import type { InvitationInput } from './Type.js';
 
 describe('Invitation Services', async () => {
   const db = getDb();
@@ -51,8 +51,10 @@ describe('Invitation Services', async () => {
 
     const createdInvitation = await createInvitation(db, invitationInput);
 
+    ok(createdInvitation, 'Invitation should be created');
+
     /// SUT: System Under Test
-    const result = await getInvitationById(db, createdInvitation?.id);
+    const result = await getInvitationById(db, createdInvitation.id);
 
     /// Verify data
     notEqual(result, null);
@@ -63,7 +65,7 @@ describe('Invitation Services', async () => {
     equal(result?.email, result?.email);
 
     /// Teardown
-    await db.delete(invitation).where(eq(invitation.id, result?.id));
+    await db.delete(invitation).where(eq(invitation.id, result!.id));
   });
 
   it('should find Invitation by Code', async () => {
