@@ -4,6 +4,7 @@ import { providerLogin, user, userEmail, userToken } from '../Schema/Schema.js';
 import type { Drizzle, Nil } from '../Type.js';
 import { pk } from '../Util/Code.js';
 import type { Page } from '../Utility.js';
+import type { Context } from './Context.js';
 import type { User, UserEmail, UserInput } from './UserType.js';
 
 export async function findUserByToken(
@@ -30,9 +31,11 @@ export async function findUserByToken(
 }
 
 export async function createUser(
-  db: Drizzle,
+  ctx: Context,
   userInput: UserInput
 ): Promise<User> {
+  const { db, $transaction } = ctx;
+
   const now = new Date();
   const newUser = {
     id: pk(),
@@ -50,8 +53,11 @@ export async function createUser(
     userId: newUser.id,
   }));
 
-  await db.insert(user).values(newUser);
-  await db.insert(userEmail).values(newEmail);
+  await $transaction((tx) => {
+    // Insert user and emails in a transaction
+    const result1 = tx.insert(user).values(newUser).returning().get();
+    const result2 = tx.insert(userEmail).values(newEmail).returning().all();
+  });
 
   return { ...newUser, emails: newEmail };
 }
