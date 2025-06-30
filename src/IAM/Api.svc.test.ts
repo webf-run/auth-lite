@@ -5,8 +5,8 @@ import { eq } from 'drizzle-orm';
 
 import { getDb } from '../../test/Db.js';
 import { apiKey } from '../Schema/Schema.js';
-import { publicAccess } from './AccessService.js';
-import { createApiKey, findApiKeyByToken } from './ApiService.js';
+import { publicAccess } from './Access.svc.js';
+import { createApiKey, findApiKeyByToken } from './Api.svc.js';
 
 describe('API Services', async () => {
   const db = getDb();

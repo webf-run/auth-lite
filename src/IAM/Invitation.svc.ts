@@ -4,11 +4,11 @@ import { ONE_DAY_MS } from '../Constant.js';
 import { invitation } from '../Schema/Schema.js';
 import type { Drizzle, Nil } from '../Type.js';
 import { inviteCode, pk } from '../Util/Code.js';
-import { isPublic } from './AccessService.js';
-import type { Access } from './AccessType.js';
+import { isPublic } from './Access.svc.js';
+import type { Access } from './Access.type.js';
 import type { Invitation, InvitationInput } from './Type.js';
-import { createUser, findUserByEmail } from './UserService.js';
-import type { User } from './UserType.js';
+import { createUser, findUserByEmail } from './User.svc.js';
+import type { User } from './User.type.js';
 
 export async function createInvitation(
   db: Drizzle,

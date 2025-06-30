@@ -8,10 +8,10 @@ import type {
   ClientAppAccess,
   PublicAccess,
   UserAccess,
-} from './AccessType.js';
+} from './Access.type.js';
 import type { AuthToken } from './Type.js';
-import { findUserByToken } from './UserService.js';
-import type { User } from './UserType.js';
+import { findUserByToken } from './User.svc.js';
+import type { User } from './User.type.js';
 
 export function isPublic(access: Access | null): access is UserAccess {
   return !access || access?.type === 'public';

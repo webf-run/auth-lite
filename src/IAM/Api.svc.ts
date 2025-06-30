@@ -4,8 +4,8 @@ import { apiKey } from '../Schema/Schema.js';
 import type { Drizzle } from '../Type.js';
 import { apiKeyId, apiKeyToken } from '../Util/Code.js';
 import { verify } from '../Util/Hash.js';
-import { isPublic } from './AccessService.js';
-import type { Access } from './AccessType.js';
+import { isPublic } from './Access.svc.js';
+import type { Access } from './Access.type.js';
 import type { ApiKey } from './Type.js';
 
 export async function createApiKey(

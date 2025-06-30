@@ -1,5 +1,5 @@
 import type { ApiKey } from './Type.js';
-import type { User } from './UserType.js';
+import type { User } from './User.type.js';
 
 export interface UserAccess {
   readonly type: 'user';

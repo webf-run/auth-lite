@@ -8,8 +8,8 @@ import { getDb } from '../../test/Db.js';
 import { user, userEmail } from '../Schema/Schema.js';
 import { pk } from '../Util/Code.js';
 import { type Page } from '../Utility.js';
-import { createUser, getUserById, getUsers } from './UserService.js';
-import { type UserInput } from './UserType.js';
+import { createUser, getUserById, getUsers } from './User.svc.js';
+import { type UserInput } from './User.type.js';
 
 describe('[Service]: User', async () => {
   const db = getDb();

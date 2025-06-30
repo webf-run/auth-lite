@@ -1,10 +1,10 @@
-import * as accessService from './IAM/AccessService.js';
-import type { Access } from './IAM/AccessType.js';
-import * as apiService from './IAM/ApiService.js';
-import * as invitationService from './IAM/InvitationService.js';
+import * as accessService from './IAM/Access.svc.js';
+import type { Access } from './IAM/Access.type.js';
+import * as apiService from './IAM/Api.svc.js';
+import * as invitationService from './IAM/Invitation.svc.js';
 import type { ApiKey, AuthToken, InvitationInput } from './IAM/Type.js';
-import * as userService from './IAM/UserService.js';
-import type { UserInput } from './IAM/UserType.js';
+import * as userService from './IAM/User.svc.js';
+import type { UserInput } from './IAM/User.type.js';
 import type { Drizzle, Nil } from './Type.js';
 import type { Page } from './Utility.js';
 

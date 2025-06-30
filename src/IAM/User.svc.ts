@@ -5,7 +5,7 @@ import type { Drizzle, Nil } from '../Type.js';
 import { pk } from '../Util/Code.js';
 import type { Page } from '../Utility.js';
 import type { Context } from './Context.js';
-import type { User, UserEmail, UserInput } from './UserType.js';
+import type { User, UserEmail, UserInput } from './User.type.js';
 
 export async function findUserByToken(
   db: Drizzle,

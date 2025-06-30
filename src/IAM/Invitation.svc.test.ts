@@ -6,13 +6,13 @@ import { eq } from 'drizzle-orm';
 
 import { getDb } from '../../test/Db.js';
 import { invitation } from '../Schema/Schema.js';
-import { publicAccess } from './AccessService.js';
+import { publicAccess } from './Access.svc.js';
 import {
   claimInvitation,
   createInvitation,
   findInvitationByCode,
   getInvitationById,
-} from './InvitationService.js';
+} from './Invitation.svc.js';
 import type { InvitationInput } from './Type.js';
 
 describe('Invitation Services', async () => {
