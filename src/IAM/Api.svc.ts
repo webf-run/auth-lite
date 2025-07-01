@@ -29,10 +29,11 @@ export async function findApiKeyByToken(
   const [id, ...rest] = token.split('.');
   const secret = rest.join('');
 
-  const result = await db
+  const result = db
     .select()
     .from(apiKey)
-    .where(and(eq(apiKey.id, id), eq(apiKey.isActive, true)));
+    .where(and(eq(apiKey.id, id), eq(apiKey.isActive, true)))
+    .all();
 
   const key = result.at(0);
 
@@ -58,15 +59,19 @@ export async function generateApiKey(
   const id = apiKeyId();
   const token = await apiKeyToken();
 
-  await db.insert(apiKey).values({
-    id,
-    description,
-    token: token.hash,
-    hashFn: token.hashFn,
-    isActive: true,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  });
+  const key = db
+    .insert(apiKey)
+    .values({
+      id,
+      description,
+      token: token.hash,
+      hashFn: token.hashFn,
+      isActive: true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    })
+    .returning()
+    .all();
 
   const serialized = `${id}.${token.secret}`;
 

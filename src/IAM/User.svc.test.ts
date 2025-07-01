@@ -1,10 +1,10 @@
-import { deepEqual, equal, notEqual } from 'node:assert';
+import { deepEqual, equal, notEqual, ok } from 'node:assert';
 import { describe, it } from 'node:test';
 
 import { faker } from '@faker-js/faker';
 import { eq } from 'drizzle-orm';
 
-import { getDb } from '../../test/Db.js';
+import { getContext, getDb } from '../../test/Db.js';
 import { user, userEmail } from '../Schema/Schema.js';
 import { pk } from '../Util/Code.js';
 import { type Page } from '../Utility.js';
@@ -12,7 +12,8 @@ import { createUser, getUserById, getUsers } from './User.svc.js';
 import { type UserInput } from './User.type.js';
 
 describe('[Service]: User', async () => {
-  const db = getDb();
+  const ctx = getContext();
+  const { db, $transaction } = ctx;
 
   describe('createUser', () => {
     it('should create a user', async () => {
@@ -25,29 +26,39 @@ describe('[Service]: User', async () => {
       };
 
       /// SUT: System Under Test
-      const result = await createUser(db, newUser);
+      const result = await createUser(ctx, newUser);
 
       /// Verify data
-      notEqual(result, undefined);
+      ok(result);
 
-      const userResult = await db
+      const userResult = db
         .select()
         .from(user)
-        .innerJoin(userEmail, eq(userEmail.userId, result.id))
-        .where(eq(user.id, result.id));
+        .where(eq(user.id, result.id))
+        .all();
+      const emailResult = db
+        .select()
+        .from(userEmail)
+        .where(eq(userEmail.userId, result.id))
+        .all();
+
+      ok(userResult);
 
       const foundUser = {
-        ...userResult.at(0)?.appUser,
-        emails: userResult.map((val) => val.userEmail.email),
+        ...userResult.at(0).appUser,
+        emails: emailResult.map((val) => val),
       };
 
-      equal(foundUser?.firstName, newUser.firstName);
-      equal(foundUser?.lastName, newUser.lastName);
-      deepEqual(foundUser?.emails, newUser.emails);
+      ok(userResult);
+      equal(foundUser.firstName, newUser.firstName);
+      equal(foundUser.lastName, newUser.lastName);
+      deepEqual(foundUser.emails, newUser.emails);
 
       /// Teardown
-      await db.delete(user).where(eq(user.id, result.id));
-      await db.delete(userEmail).where(eq(userEmail.userId, result.id));
+      await $transaction((tx) => {
+        tx.delete(user).where(eq(user.id, result.id));
+        tx.delete(userEmail).where(eq(userEmail.userId, result.id));
+      });
     });
   });
 
@@ -64,8 +75,8 @@ describe('[Service]: User', async () => {
     const rs = await getUsers(db, request);
 
     /// Verify data
-    notEqual(rs, null);
-    equal(rs?.length > 0, true);
+    ok(rs);
+    ok(rs.length > 0);
   });
 
   it('should get User by ID', async () => {
@@ -89,20 +100,24 @@ describe('[Service]: User', async () => {
       })
     );
 
-    await db.insert(user).values(newUser);
-    await db.insert(userEmail).values(newEmail);
+    await $transaction((tx) => {
+      const userR = tx.insert(user).values(newUser);
+      const userE = tx.insert(userEmail).values(newEmail);
+    });
 
     /// SUT: System Under Test
     const userResult = await getUserById(db, newUser.id);
 
     /// Verify data
-    notEqual(userResult, null);
-    equal(userResult?.firstName, newUser.firstName);
-    equal(userResult?.lastName, newUser.lastName);
-    deepEqual(userResult?.emails, newEmail);
+    ok(userResult, 'failed to get user');
+    equal(userResult.firstName, newUser.firstName);
+    equal(userResult.lastName, newUser.lastName);
+    deepEqual(userResult.emails, newEmail);
 
     /// Teardown
-    await db.delete(user).where(eq(user.id, newUser.id));
-    await db.delete(userEmail).where(eq(userEmail.userId, newUser.id));
+    await $transaction((tx) => {
+      tx.delete(user).where(eq(user.id, newUser.id));
+      tx.delete(userEmail).where(eq(userEmail.userId, newUser.id));
+    });
   });
 });
