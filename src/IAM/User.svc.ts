@@ -11,12 +11,13 @@ export async function findUserByToken(
   db: Drizzle,
   token: string
 ): Promise<Nil<User>> {
-  const result = await db
+  const result = db
     .select()
     .from(userToken)
     .innerJoin(user, eq(userToken.userId, user.id))
     .innerJoin(userEmail, eq(userEmail.userId, user.id))
-    .where(eq(userToken.id, token));
+    .where(eq(userToken.id, token))
+    .all();
 
   const found = result.at(0);
 
@@ -66,11 +67,12 @@ export async function getUserById(
   db: Drizzle,
   userId: string
 ): Promise<Nil<User>> {
-  const userResult = await db
+  const userResult = db
     .select()
     .from(user)
     .innerJoin(userEmail, eq(userEmail.userId, userId))
-    .where(eq(user.id, userId));
+    .where(eq(user.id, userId))
+    .all();
 
   const found = userResult.at(0);
 
@@ -85,12 +87,13 @@ export async function getUserById(
 }
 
 export async function getUsers(db: Drizzle, page: Page): Promise<Nil<User[]>> {
-  const fetchResult = await db
+  const fetchResult = db
     .select()
     .from(user)
     .innerJoin(userEmail, eq(userEmail.userId, user.id))
     .limit(page.size)
-    .offset(page.number * page.size);
+    .offset(page.number * page.size)
+    .all();
 
   const result: Nil<User[]> = fetchResult.map((val) => ({
     id: val.appUser.id,
@@ -115,11 +118,12 @@ export async function findUserByEmail(
   db: Drizzle,
   email: string
 ): Promise<Nil<User>> {
-  const result = await db
+  const result = db
     .select()
     .from(userEmail)
     .innerJoin(user, eq(userEmail.userId, user.id))
-    .where(eq(userEmail.email, email));
+    .where(eq(userEmail.email, email))
+    .all();
 
   const found = result.at(0);
 
@@ -137,12 +141,13 @@ export async function findUserBySocialId(
   db: Drizzle,
   socialId: string
 ): Promise<Nil<User>> {
-  const result = await db
+  const result = db
     .select()
     .from(providerLogin)
     .innerJoin(user, eq(providerLogin.userId, user.id))
     .innerJoin(userEmail, eq(providerLogin.userId, userEmail.userId))
-    .where(eq(providerLogin.subjectId, socialId));
+    .where(eq(providerLogin.subjectId, socialId))
+    .all();
 
   const found = result.at(0);
 
@@ -160,7 +165,7 @@ export async function deleteUser(
   db: Drizzle,
   userId: string
 ): Promise<boolean> {
-  const result = await db.delete(user).where(eq(user.id, userId)).returning();
+  const result = db.delete(user).where(eq(user.id, userId)).returning().all();
 
   return result.at(0) !== undefined;
 }

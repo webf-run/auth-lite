@@ -6,6 +6,7 @@ import type { Drizzle, Nil } from '../Type.js';
 import { inviteCode, pk } from '../Util/Code.js';
 import { isPublic } from './Access.svc.js';
 import type { Access } from './Access.type.js';
+import type { Context } from './Context.js';
 import type { Invitation, InvitationInput } from './Type.js';
 import { createUser, findUserByEmail } from './User.svc.js';
 import type { User } from './User.type.js';
@@ -30,7 +31,7 @@ export async function createInvitation(
     updatedAt: now,
   };
 
-  const result = await db.insert(invitation).values(newInvitation).returning();
+  const result = db.insert(invitation).values(newInvitation).returning().all();
 
   return result.at(0);
 }
@@ -39,10 +40,11 @@ export async function getInvitationById(
   db: Drizzle,
   invitationId: string
 ): Promise<Nil<Invitation>> {
-  const results = await db
+  const results = db
     .select()
     .from(invitation)
-    .where(eq(invitation.id, invitationId));
+    .where(eq(invitation.id, invitationId))
+    .all();
 
   return results.at(0) ?? null;
 }
@@ -51,16 +53,17 @@ export async function findInvitationByCode(
   db: Drizzle,
   code: string
 ): Promise<Nil<Invitation>> {
-  const results = await db
+  const results = db
     .select()
     .from(invitation)
-    .where(and(eq(invitation.code, code), gt(invitation.expiryAt, new Date())));
+    .where(and(eq(invitation.code, code), gt(invitation.expiryAt, new Date())))
+    .all();
 
   return results.at(0) ?? null;
 }
 
 export async function claimInvitation(
-  db: Drizzle,
+  ctx: Context,
   access: Access,
   code: string,
   password: string
@@ -69,19 +72,19 @@ export async function claimInvitation(
     throw new Error('Invalid access');
   }
 
-  const invitation = await findInvitationByCode(db, code);
+  const invitation = await findInvitationByCode(ctx.db, code);
 
   if (!invitation) {
     throw 'Invitation not found';
   }
 
-  const user = await findUserByEmail(db, invitation.email);
+  const user = await findUserByEmail(ctx.db, invitation.email);
 
   if (user) {
     throw 'User already exists';
   }
 
-  const userResult = await createUser(db, {
+  const userResult = await createUser(ctx, {
     ...invitation,
     emails: [invitation.email],
   });
@@ -91,7 +94,7 @@ export async function claimInvitation(
   //   await createLocalLogin(tx, user.id, username, password);
   // }
 
-  await deleteInvitation(db, invitation.id);
+  await deleteInvitation(ctx.db, invitation.id);
 
   return userResult;
 }
@@ -100,10 +103,11 @@ export async function deleteInvitation(
   db: Drizzle,
   invitationId: string
 ): Promise<boolean> {
-  const results = await db
+  const results = db
     .delete(invitation)
     .where(eq(invitation.id, invitationId))
-    .returning();
+    .returning()
+    .all();
 
   return results.length > 0;
 }

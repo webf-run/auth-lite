@@ -13,18 +13,6 @@ import type { AuthToken } from './Type.js';
 import { findUserByToken } from './User.svc.js';
 import type { User } from './User.type.js';
 
-export function isPublic(access: Access | null): access is UserAccess {
-  return !access || access?.type === 'public';
-}
-
-export function isUser(access: Access | null): access is UserAccess {
-  return access?.type === 'user';
-}
-
-export function isClient(access: Access | null): access is UserAccess {
-  return access?.type === 'client';
-}
-
 export async function findAccess(
   db: Drizzle,
   tokenType: string,
@@ -56,7 +44,7 @@ export async function createToken(
 ): Promise<Nil<AuthToken>> {
   const tokenId = bearerToken();
 
-  const added = await db
+  const added = db
     .insert(userToken)
     .values({
       id: tokenId,
@@ -64,7 +52,8 @@ export async function createToken(
       duration: 3600 * 1000 * 72,
       generatedAt: new Date(),
     })
-    .returning();
+    .returning()
+    .all();
 
   const first = added.at(0);
   if (!first || !first.id) return null;
@@ -76,10 +65,11 @@ export async function deleteToken(
   db: Drizzle,
   token: string
 ): Promise<Nil<AuthToken>> {
-  const result = await db
+  const result = db
     .delete(userToken)
     .where(eq(userToken.id, token))
-    .returning();
+    .returning()
+    .all();
 
   const found = result.at(0);
 
@@ -88,6 +78,18 @@ export async function deleteToken(
   }
 
   return { ...found, type: 'bearer' };
+}
+
+export function isPublic(access: Access | null): access is UserAccess {
+  return !access || access?.type === 'public';
+}
+
+export function isUser(access: Access | null): access is UserAccess {
+  return access?.type === 'user';
+}
+
+export function isClient(access: Access | null): access is UserAccess {
+  return access?.type === 'client';
 }
 
 export function userAccess(user: User): UserAccess {

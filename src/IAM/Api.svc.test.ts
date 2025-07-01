@@ -1,4 +1,4 @@
-import { equal, notEqual } from 'node:assert';
+import { equal, notEqual, ok } from 'node:assert';
 import { describe, it } from 'node:test';
 
 import { eq } from 'drizzle-orm';
@@ -19,28 +19,27 @@ describe('API Services', async () => {
     const rs = await createApiKey(db, access, 'Lorem_ipsum');
 
     /// Verify data
-    notEqual(rs, null);
-    equal(rs?.length > 0, true);
+    ok(rs, 'failed to create Api key');
+    ok(rs.length > 0);
 
     /// Teardown
-    await db.delete(apiKey).where(eq(apiKey.id, rs));
+    db.delete(apiKey).where(eq(apiKey.id, rs));
   });
 
   it('should find ApiKey by Token', async () => {
     /// Setup data
     const access = publicAccess();
-
     const createdApiKey = await createApiKey(db, access, 'Lorem_ipsum');
 
     /// SUT: System Under Test
     const result = await findApiKeyByToken(db, createdApiKey);
 
     /// Verify data
-    notEqual(result, undefined);
+    ok(result);
 
-    equal(result?.description, 'Lorem_ipsum');
+    equal(result.description, 'Lorem_ipsum');
 
     /// Teardown
-    await db.delete(apiKey).where(eq(apiKey.id, result.id));
+    db.delete(apiKey).where(eq(apiKey.id, result.id));
   });
 });

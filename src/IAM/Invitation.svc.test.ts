@@ -1,10 +1,10 @@
-import { equal, notEqual, ok } from 'node:assert';
+import { equal, ok } from 'node:assert';
 import { describe, it } from 'node:test';
 
 import { faker } from '@faker-js/faker';
 import { eq } from 'drizzle-orm';
 
-import { getDb } from '../../test/Db.js';
+import { getContext } from '../../test/Db.js';
 import { invitation } from '../Schema/Schema.js';
 import { publicAccess } from './Access.svc.js';
 import {
@@ -16,7 +16,8 @@ import {
 import type { InvitationInput } from './Type.js';
 
 describe('Invitation Services', async () => {
-  const db = getDb();
+  const ctx = getContext();
+  const { db, $transaction } = ctx;
 
   it('should create Invitation', async () => {
     /// Setup data
@@ -31,13 +32,13 @@ describe('Invitation Services', async () => {
     const result = await createInvitation(db, invitationInput);
 
     /// Verify data
-    notEqual(result, undefined);
-    equal(result?.firstName, invitationInput.firstName);
-    equal(result?.lastName, invitationInput.lastName);
-    equal(result?.email, invitationInput.email);
+    ok(result);
+    equal(result.firstName, invitationInput.firstName);
+    equal(result.lastName, invitationInput.lastName);
+    equal(result.email, invitationInput.email);
 
     /// Teardown
-    await db.delete(invitation).where(eq(invitation.id, result?.id));
+    db.delete(invitation).where(eq(invitation.id, result.id)).all();
   });
 
   it('should get Invitation by Id', async () => {
@@ -57,15 +58,11 @@ describe('Invitation Services', async () => {
     const result = await getInvitationById(db, createdInvitation.id);
 
     /// Verify data
-    notEqual(result, null);
-    equal(result?.id, result?.id);
-    equal(result?.code, result?.code);
-    equal(result?.firstName, result?.firstName);
-    equal(result?.lastName, result?.lastName);
-    equal(result?.email, result?.email);
+    ok(result);
+    equal(result.id, createdInvitation.id, 'Didnt get correct invitation');
 
     /// Teardown
-    await db.delete(invitation).where(eq(invitation.id, result!.id));
+    db.delete(invitation).where(eq(invitation.id, result!.id)).all();
   });
 
   it('should find Invitation by Code', async () => {
@@ -79,19 +76,19 @@ describe('Invitation Services', async () => {
 
     const createdInvitation = await createInvitation(db, invitationInput);
 
+    ok(createdInvitation, 'Invitation should be created');
+
     /// SUT: System Under Test
-    const result = await findInvitationByCode(db, createdInvitation?.code);
+    const result = await findInvitationByCode(db, createdInvitation.code);
 
     /// Verify data
-    notEqual(result, null);
-    equal(result?.id, result?.id);
-    equal(result?.code, result?.code);
-    equal(result?.firstName, result?.firstName);
-    equal(result?.lastName, result?.lastName);
-    equal(result?.email, result?.email);
+    ok(result);
+    equal(result.firstName, createdInvitation.firstName);
+    equal(result.lastName, createdInvitation.lastName);
+    equal(result.email, createdInvitation.email);
 
     /// Teardown
-    await db.delete(invitation).where(eq(invitation.id, result?.id));
+    db.delete(invitation).where(eq(invitation.id, result.id)).all();
   });
 
   it('should Claim Invitation', async () => {
@@ -102,25 +99,26 @@ describe('Invitation Services', async () => {
 
       email: faker.internet.email(),
     };
+    const access = publicAccess();
 
     const createdInvitation = await createInvitation(db, invitationInput);
 
-    const access = publicAccess();
+    ok(createdInvitation, 'Invitation should be created');
 
     /// SUT: System Under Test
     const result = await claimInvitation(
-      db,
+      ctx,
       access,
-      createdInvitation?.code,
+      createdInvitation.code,
       ''
     );
 
     /// Verify data
-    notEqual(result, null);
-    equal(result?.firstName, result?.firstName);
-    equal(result?.lastName, result?.lastName);
+    ok(result);
+    equal(result.firstName, createdInvitation.firstName);
+    equal(result.lastName, createdInvitation.lastName);
 
     /// Teardown
-    await db.delete(invitation).where(eq(invitation.id, result?.id));
+    await db.delete(invitation).where(eq(invitation.id, result.id));
   });
 });
